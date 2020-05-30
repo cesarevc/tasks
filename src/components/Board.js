@@ -6,8 +6,8 @@ import SortableList from './SortableList';
 function Board () {
 
     const [tasks, setTasks] = useState([{
-        title : 'NO HAY TAREAS', 
-        description: 'no disponible',
+        title : 'NO TASKS', 
+        description: 'no available',
         _id: 0,
         order: 0
     }]);
@@ -34,6 +34,7 @@ function Board () {
 
 
     const uptatedOrder = async(tasksIds) => {
+
         await fetch('http://localhost:4000/tasks',{
             method: 'PUT',
             headers: {
@@ -41,7 +42,6 @@ function Board () {
             },
             body: JSON.stringify(tasksIds)
         }).then(data => data.json()).catch(err => console.log(err));
-
     }
     
     const onSortEnd = async({oldIndex, newIndex}) => {
@@ -66,9 +66,12 @@ function Board () {
     }, []);
   
   
-    return  (
-      <SortableList tasks={tasks} onSortEnd={onSortEnd} />
-    )
+    return (
+        <div class="jumbotron">
+            <SortableList tasks={tasks} onSortEnd={onSortEnd} /> 
+        </div>
+    );
+    
   }
 
   export default Board;

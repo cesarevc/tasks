@@ -3,7 +3,9 @@ _This practice using a backend NODE and frontend REACT -high order components- t
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-
+## ADD TASKS
+![alt text](./src/assets/addtask.gif)
+## SORTABLE LIST
 ![alt text](./src/assets/sortable.gif)
 
 

@@ -25,10 +25,6 @@ app.use(express.json());
 
 
 //ROUTES
-app.get('/tasks', async (req, res) => {
-    const tasks = await TASK.find();
-    res.json(tasks);
-})
 app.post('/tasks', async(req, res) => {
     const newTask = new TASK(req.body);
     newTask.order = await TASK.estimatedDocumentCount();
@@ -36,6 +32,14 @@ app.post('/tasks', async(req, res) => {
     newTask.save();
     res.json(newTask);
 });
+
+
+app.get('/tasks', async (req, res) => {
+    const tasks = await TASK.find();
+    res.json(tasks);
+});
+
+
 app.put('/tasks', async(req, res) => {
 
     const tasksIDS  = req.body;
@@ -44,6 +48,13 @@ app.put('/tasks', async(req, res) => {
         await TASK.updateOne({_id: id}, {order: i})
     }
     res.json({msg: 'tasks was updated successful'});
+});
+
+app.post('/deletetask', async(req, res) => {
+    const idtask = req.body._id;
+    console.log(idtask)
+    TASK.findOneAndDelete({_id: idtask}, (err) => console.log(err))
+    res.json({msg: 'tasks was deleted successful'});
 });
 
 
