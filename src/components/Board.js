@@ -5,18 +5,31 @@ import SortableList from './SortableList';
 
 function Board () {
 
-    const [tasks, setTasks] = useState([]);
+    const [tasks, setTasks] = useState([{
+        title : 'NO HAY TAREAS', 
+        description: 'no disponible',
+        _id: 0,
+        order: 0
+    }]);
   
+
     const fetchApi = async() => {
-      const response = await fetch('http://localhost:4000/tasks')
-        .then(data => data.json())
-        .catch(err => console.log(err));
-      // Ordena los items por su 'order' de la bd
-      response.sort((a, b) => (
-        (a.order > b.order) ? 1 : ((b.order > a.order) ? -1 : 0)
-      ));
-      // actualiza el estado
-      setTasks(response);
+        let response = '';
+
+        try {
+            response = await fetch('http://localhost:4000/tasks').then(data => data.json()); 
+        } catch (err) {
+            console.log(err);
+        }
+        //valida que existe respuesta del fetch
+        if(!response === null || !response === undefined || Object.values(response).length > 0){
+            // Ordena los items por su 'order' de la bd
+            response.sort((a, b) => (
+                (a.order > b.order) ? 1 : ((b.order > a.order) ? -1 : 0)
+            ));
+            // actualiza el estado
+            setTasks(response);
+        } 
     }
 
 
@@ -30,12 +43,7 @@ function Board () {
         }).then(data => data.json()).catch(err => console.log(err));
 
     }
-  
-    //se ejecuta al inicio
-    useEffect(() => {
-      fetchApi(); 
-    }, []);
-  
+    
     const onSortEnd = async({oldIndex, newIndex}) => {
   
         const tasksCopy = [...tasks];
@@ -46,8 +54,17 @@ function Board () {
         //selecciona los ids en el orden actualizado
         const tasksIds = newOrderTask.map(t => t._id);
         //actualiza en la bd el orden actual del arreglo
-        uptatedOrder(tasksIds);
+        if (oldIndex !== newIndex){
+            uptatedOrder(tasksIds);
+        }
     }
+
+
+    // se ejecuta al inicio similar al didmounth
+    useEffect(() => {
+      fetchApi(); 
+    }, []);
+  
   
     return  (
       <SortableList tasks={tasks} onSortEnd={onSortEnd} />
